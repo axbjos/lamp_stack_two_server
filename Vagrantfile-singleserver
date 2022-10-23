@@ -1,0 +1,76 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Single Server LAMP Stack Running the PHP Crude CRUD Web Application
+# See the GitHub repo for details
+# single server - use this file for a single server solution.
+
+# Vagrant uses Ruby, so Ruby Do Loop...
+Vagrant.configure("2") do |config|
+  
+  # Use an appropriate box here!!!!! Uncomment the line applicable to you!!!!
+  # For Intel Windows/Mac using Virtualbox (and only Virtualbox) use
+  # In other words for an Intel PC, uncomment the line below and comment (or remove)
+  # the lines for an ARM based Mac...
+  config.vm.box = "ubuntu/focal64"
+
+  # For ARM aka "M1/M2" aka "Apple Silicon" Macs using VMware Fusion for Apple Silicon
+  # You must use a special box/template created by Joe
+  #config.vm.box = "axnetlabs/axnetlabs_focal_arm64"   # line needed for ARM Macs
+  #config.vm.provider 'vmware_desktop' do |vmware|     # line needed for ARM Macs
+  #    vmware.gui = true                               # line needed for ARM Macs
+  #end                                                  # line needed for ARM Macs
+
+  # Do any networking if needed
+  # You could port forward to the webserver
+  # Or connect it to a host only network
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  #####for host only make sure you know what you are doing - ask for help!!!
+  config.vm.network "private_network", ip: "192.168.56.10"
+
+  # Now move on to web server provisioning
+
+  # Copy necessary files to the VM
+  # This copies a simple file out to the webserver that can be used to verify PHP is working
+  config.vm.provision "file", source: "phptest.php", destination: "phptest.php"
+
+  # Now run a bunch of shell commands to get the web app in place
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt-get install -y apache2
+    apt-get install -y php libapache2-mod-php php-mysql
+    systemctl restart apache2.service
+    cp phptest.php /var/www/html
+    echo "loading php web app"
+    git clone https://github.com/axbjos/phpcrudecrudapp.git
+    cd phpcrudecrudapp
+    mv * /var/www/html
+  SHELL
+
+  # Now move on to database server provisioning
+
+  # Stage the configurations files needed - make sure they are in your local directory for 
+  # copying out to the VM
+  # addusers.sql is a script file used to add the needed users to the MySQL database
+  config.vm.provision "file", source: "addusers.sql", destination: "addusers.sql"
+  #config.vm.provision "file", source: "50-server.cnf", destination: "50-server.cnf"
+
+  # Now configure the database
+  # These commands will install the MariaDB distribution of MySQL
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt install -y mariadb-server
+    git clone https://github.com/datacharmer/test_db.git
+    cd  test_db
+    mysql -t < employees.sql
+    cd ..
+    # uncomment the next two if you want the DB accessible on all interfaces
+    #cp 50-server.cnf /etc/mysql/mariadb.conf.d/
+    #systemctl restart mariadb
+    cd /home/vagrant
+    echo "securing mysql and adding joeaxberg user"
+    mysql -t < addusers.sql
+    echo "done"
+  SHELL
+
+end
