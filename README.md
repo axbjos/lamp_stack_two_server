@@ -2,16 +2,18 @@
 
 ## Background
 
-This Vagrantfile will create a single server running the following (LAMP Stack):
+This Vagrantfile will create a two-server LAMP Stack:
 
-- Ubuntu 20.04 Linux
-- MariaDB distribution of MySQL
-- Apache 2 Webserver
-- PHP Programming Language and Modules
+- Ubuntu 20.04 Linux for both servers
+- MariaDB distribution of MySQL on the DB
+- Apache 2 Webserver on the App Server
+- PHP Programming Language and Modules on the App Server
 
 A sample 300,000 record "Employee" database will be uploaded to the DB.  
 
 A sample PHP application that implements all CRUD operations in very Crude fashion: aka the PHP Crude CRUD App.
+
+If you just want a LAMP stack, don't do the PHP Crude CRUD stuff.
 
 Please review the Vagrantfile for specific configuration details.
 
@@ -43,12 +45,12 @@ Also as of Oct 18, 2022, there are all sorts of "gotchas" running Vagrant and VM
 
 ## Manual Install Alternative
 
-Create your own Ubuntu 18/20/22 Virtual Machine manually using whatever hypervisor you wish.
+Create your own Ubuntu 18/20/22 Virtual Machines manually using whatever hypervisor you wish.
 
 Then just run all the shell commands shown in the Vagrant file on your VM
 
 ## Docker
 
-Look at my phpcrudecruddocker repo for an example of how to containerize the app.
+Look at my phpcrudecruddocker repo for an example of how to containerize the app side of PHP Crude CRUD.
 
-A ready to go app is also available on Dockhub.  Will add the pull link soon.
+A ready to go app is also available on Dockerhub.  Will add the pull link soon.
