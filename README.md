@@ -2,12 +2,17 @@
 
 ## Background
 
-This Vagrantfile will create a two-server LAMP Stack:
+Vagrant Files for createing a LAMP Stack:
 
-- Ubuntu 20.04 Linux for both servers
-- MariaDB distribution of MySQL on the DB
-- Apache 2 Webserver on the App Server
-- PHP Programming Language and Modules on the App Server
+- Ubuntu 20.04 Linux
+- MariaDB distribution of MySQL
+- Apache 2 Webserver
+- PHP Programming Language and Modules
+
+Two options for Vagrantfile:
+
+- one creates a single server all-in-one solution
+- one creates a two server DB + WebApp server solution.
 
 A sample 300,000 record "Employee" database will be uploaded to the DB.  
 
